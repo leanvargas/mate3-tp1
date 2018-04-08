@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct remedios
-{
-  char codigoRemedio[3];
-  char codigoDroga[3];
-  int cantidad;
-};
-
 struct drogas
 {
   char codigoDroga[3];
   float costo;
+};
+
+struct remedios
+{
+  char codigoRemedio[3];
+  char codigoDroga[3];
+  int cantidad; //cantidad de remedios disponibles
 };
 
 struct ventas
@@ -24,30 +24,43 @@ struct ventas
 
 
 int login(char *USUARIO, char *CONTRASENA);
-void ingresarDatos(FILE *remedios, FILE *drogas, FILE *ventas);
+void ingresarDatos(FILE *remediosFile, FILE *drogasFile, FILE *ventasFile);
 char menu();
+void facturacionTotal();
 
 int main ()
 {
-    const char USUARIO[16]="usuario";
-    const char CONTRASENA[11]="contra1234";
+    const char USUARIO[16]="123";
+    const char CONTRASENA[11]="123";
     char opcion='0';
     char contrasena[11];
     char usuario[16];
     int intentos=0;
     int datosIngresados= 0;
+    int i;
 
-    FILE *remedios;
-    FILE *drogas;
-    FILE *ventas;
+    FILE *remediosFile;
+    FILE *drogasFile;
+    FILE *ventasFile;
+    /* struct remedios remedio[300]; //15 remedios distintos * 20 drogas como maximo cada remedio */
+    /* struct drogas droga[200]; //200 drogas como maximo en el laboratorio */
+    /* struct ventas venta[15]; //15 ventas como maximo, una por cada remedio del laboratorio */
+
+
+    /* si la cantidad de remedios con distinto codigo es >15,
+       no permitirle agregar mas */
+
+    /* si la cantidad de drogas es > 200, no permitir agregar mas */
+
+
 
     do{
       printf("Ingresar usuario: \n");
-      scanf("%s", &usuario);
+      scanf("%s", usuario);
       //este while es porque el scanf no funciona en linux
       while(getchar() !='\n');
       printf("Ingresar contraseña: \n");
-      scanf("%s", &contrasena);
+      scanf("%s", contrasena);
       while(getchar() !='\n');
       intentos ++;
     }while(((strcmp(usuario, USUARIO) != 0) || (strcmp(contrasena, CONTRASENA) != 0)) && (intentos<3));
@@ -62,7 +75,7 @@ int main ()
       if (datosIngresados == 0 && opcion!='0'){
         printf("Debe ingresar datos primero\n");
       }else if (datosIngresados==0 && opcion=='0'){
-        ingresarDatos(remedios, drogas, ventas);
+        ingresarDatos(remediosFile, drogasFile, ventasFile);
         datosIngresados=1;
       }else if (datosIngresados==1 && opcion=='0'){
         printf("Ya hay datos ingresados. \n");
@@ -70,7 +83,7 @@ int main ()
         switch (opcion)
           {
             /* case '1': emitir(); break; */
-            /* case '2': facturacionTotal(); break; */
+          case '2': facturacionTotal(remediosFile, drogasFile, ventasFile); break;
             /* case '3': facturacionRemedio(); break; */
             /* case '4': maxDrogaPorPedido(); break; */
             /* case '5': maxDrogaPorRemedio(); break; */
@@ -106,7 +119,7 @@ char menu(){
 
 }
 
-void ingresarDatos(FILE *remedios, FILE *drogas, FILE *ventas){
+void ingresarDatos(FILE *remediosFile, FILE *drogasFile, FILE *ventasFile){
    /* ingresar en 3 archivos diferentes los datos que se piden. */
   char seguirCargando;
 
@@ -114,81 +127,122 @@ void ingresarDatos(FILE *remedios, FILE *drogas, FILE *ventas){
   struct drogas droga;
   struct ventas venta;
 
+  //cargo un remedio
+  printf("----------- Datos del remedio ------------ \n");
+
   do{
-    remedios = fopen("remedios.txt","w+");
-    fseek(remedios,0,SEEK_END);
-    //creo un remedio
-    printf("----------- Datos del remedio ------------ \n");
+    remediosFile = fopen("remedios.dat","wb+");
+    fseek(remediosFile,0,SEEK_END);
 
     printf("ingresar codigo del remedio: \n");
-    scanf("%s",&remedio.codigoRemedio);
+    scanf("%s", remedio.codigoRemedio);
     while(getchar()!='\n');
 
     printf("Ingresar codigo de la droga: \n");
-    scanf("%s", &remedio.codigoDroga);
+    scanf("%s", remedio.codigoDroga);
     while(getchar()!='\n');
 
     printf("Ingresar la cantidad: \n");
     scanf("%d", &remedio.cantidad);
     while(getchar()!='\n');
 
-    fwrite(&remedio,sizeof(struct remedios),1,remedios);
+    fwrite(&remedio,sizeof(struct remedios),1,remediosFile);
 
-    printf("Seguir cargando remedios?(s/n) \n");
-    scanf("%c", &seguirCargando);
-    while(getchar()!='\n');
+    do{
+      printf("Seguir cargando remedio?(s/n) \n");
+      scanf("%c", &seguirCargando);
+      while(getchar()!='\n');
+    }while(seguirCargando!='s' && seguirCargando!='n');
 
   }while(seguirCargando=='s');
-  fclose(remedios);
+  fclose(remediosFile);
+
+  //cargo una droga
+  printf("----------- Datos de la droga ------------ \n");
 
   do{
-    drogas = fopen("drogas.txt","w+");
-    fseek(drogas,0,SEEK_END);
-    //creo una droga
-    printf("----------- Datos de la droga ------------ \n");
+    drogasFile = fopen("drogas.dat","wb+");
+    fseek(drogasFile,0,SEEK_END);
 
     printf("Ingresar codigo de la droga: \n");
-    scanf("%s", &droga.codigoDroga);
+    scanf("%s", droga.codigoDroga);
     while(getchar()!='\n');
 
     printf("Ingresar costo de la droga: \n");
-    scanf("%.2f", &droga.costo);
+    scanf("%f", &droga.costo);
     while(getchar()!='\n');
 
-    fwrite(&droga,sizeof(struct drogas),1,drogas);
+    fwrite(&droga,sizeof(struct drogas),1,drogasFile);
 
-    printf("Seguir cargando drogas?(s/n) \n");
-    scanf("%c", &seguirCargando);
-    while(getchar()!='\n');
+    do{
+      printf("Seguir cargando drogas?(s/n) \n");
+      scanf("%c", &seguirCargando);
+      while(getchar()!='\n');
+    }while(seguirCargando!='s' && seguirCargando!='n');
 
   }while(seguirCargando=='s');
-  fclose(drogas);
+  fclose(drogasFile);
+
+  //cargo una venta
+  printf("----------- Datos de la venta ------------ \n");
 
   do{
-    ventas = fopen("ventas.txt","w+");
-    fseek(ventas,0,SEEK_END);
-    //creo una venta
-    printf("----------- Datos de la venta ------------ \n");
+    ventasFile = fopen("ventas.dat","wb+");
+    fseek(ventasFile,0,SEEK_END);
 
     printf("Ingresar numero de factura: \n");
     scanf("%d", &venta.nroFactura);
     while(getchar()!='\n');
 
     printf("Ingresar codigo del remedio: \n");
-    scanf("%s", &venta.codigoRemedio);
+    scanf("%s", venta.codigoRemedio);
     while(getchar()!='\n');
 
     printf("Ingresar cantidad de ventas: \n");
     scanf("%d", &venta.cantidadVendida);
     while(getchar()!='\n');
 
-    fwrite(&venta,sizeof(struct ventas),1,ventas);
+    fwrite(&venta,sizeof(struct ventas),1,ventasFile);
 
-    printf("Seguir cargando ventas?(s/n) \n");
-    scanf("%c", &seguirCargando);
-    while(getchar()!='\n');
+    do{
+      printf("Seguir cargando ventas?(s/n) \n");
+      scanf("%c", &seguirCargando);
+      while(getchar()!='\n');
+    }while(seguirCargando!='s' && seguirCargando!='n');
 
   }while(seguirCargando=='s');
+  fclose(ventasFile);
 
-  fclose(ventas);
+}
+
+void facturacionTotal(FILE *remediosFile, FILE * ventasFile, FILE *drogasFile){
+  struct remedios remedio;
+  struct drogas droga;
+  struct ventas venta;
+
+  float ventaTotal = 0;
+
+  drogasFile= fopen("drogas.dat","rb");
+  remediosFile= fopen("remedios.dat","rb");
+  ventasFile= fopen("ventas.dat","rb");
+
+  /* Agarro una venta */
+  while(fread(&venta,sizeof(struct ventas),1,ventasFile)){
+    /* Busco el remedio con ese codigo */
+    while(fread(&remedio,sizeof(struct remedios),1,remediosFile)){
+      if (strcmp(remedio.codigoRemedio, venta.codigoRemedio)==0){
+        /* Busco la droga y almaceno el costo */
+        while(fread(&droga,sizeof(struct drogas),1,drogasFile)){
+          if (strcmp(remedio.codigoDroga, droga.codigoDroga)==0){
+            ventaTotal +=droga.costo;
+          }
+        }
+      }
+    }
+  }
+  fclose(drogasFile);
+  fclose(remediosFile);
+  fclose(ventasFile);
+
+  printf("El valor total de ventas es: %.2f \n", ventaTotal);
 }
