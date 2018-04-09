@@ -29,6 +29,7 @@ void facturacionTotal(FILE *remediosFile, FILE *drogasFile, FILE *ventasFile);
 void facturacionPorRemedio(FILE *remediosFile, FILE *drogasFile, FILE *ventasFile);
 void drogaMasBarata(FILE *drogasFile);
 int cantRemediosTotales(FILE *remediosFile);
+int cantidadDrogasXRemedio(FILE *remediosFile, struct remedios remedio);
 char menu();
 
 int main ()
@@ -220,7 +221,6 @@ int cantRemediosTotales(FILE *remediosFile){
   struct remedios remedio1;
   struct remedios remedio2;
 
-  char remediosLista[15];
   int cantidadRemedios = 0, agregar = 1;
   int i,j;
 
@@ -248,7 +248,26 @@ int cantRemediosTotales(FILE *remediosFile){
 
 int cantidadDrogasXRemedio(FILE *remediosFile, struct remedios remedio){
   /* devuelve la cantidad de drogas por remedio */
-  return 0;
+  /* Se asume que todos los remedios con el mismo codigo ingresados en el archivo, tienen drogas distintas. */
+  struct remedios remedioAComparar;
+
+  int cantidadRemedios = 0, cantidadDrogas = 0;
+  int i;
+
+  remediosFile= fopen("remedios.dat","rb");
+
+  fseek(remediosFile,0,SEEK_END);
+  cantidadRemedios = ftell(remediosFile)/sizeof(struct remedios);
+  fseek(remediosFile,0,SEEK_SET);
+
+  for(i=0;i<cantidadRemedios;i++){
+    fread(&remedioAComparar,i*sizeof(struct remedios),1,remediosFile);
+      if(strcmp(remedioAComparar.codigoRemedio,remedio.codigoRemedio)==0){
+        cantidadDrogas ++;
+      }
+    }
+
+  return cantidadDrogas;
 }
 
 void facturacionTotal(FILE *remediosFile, FILE * ventasFile, FILE *drogasFile){
@@ -317,7 +336,7 @@ void facturacionPorRemedio(FILE *remediosFile, FILE * ventasFile, FILE *drogasFi
 }
 
 void DrogaRemediosVendidos(FILE *remediosFile, FILE * ventasFile, FILE *drogasFile){
-  
+
 }
 
 void drogaMasBarata(FILE *drogasFile){
