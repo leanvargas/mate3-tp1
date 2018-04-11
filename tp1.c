@@ -30,6 +30,7 @@ void facturacionPorRemedio(FILE *remediosFile, FILE *drogasFile, FILE *ventasFil
 void drogaMasBarata(FILE *drogasFile);
 int cantRemediosTotales(FILE *remediosFile);
 int cantidadDrogasXRemedio(FILE *remediosFile, struct remedios remedio);
+float buscarCostoDroga(FILE *drogasFile, char codigoDroga[3]);
 char menu();
 
 int main ()
@@ -335,8 +336,77 @@ void facturacionPorRemedio(FILE *remediosFile, FILE * ventasFile, FILE *drogasFi
 
 }
 
-void DrogaRemediosVendidos(FILE *remediosFile, FILE * ventasFile, FILE *drogasFile){
 
+void DrogaRemediosVendidos(FILE *remediosFile, FILE * ventasFile, FILE *drogasFile){
+  struct remedios remedio;
+  struct ventas venta;
+
+  char listaCodigoDrogas[200][3]; //200 filas de drogas x el codigo de la droga
+  int listaCantidadDrogas[200];
+  char drogaMasUsada[3];
+  int i;
+
+  //Lleno el array con drogas vacias
+  for(i=0;i<200;i++){
+    strcpy(listaCodigoDrogas[i], "");
+    listaCantidadDrogas[i] = 0;
+  }
+
+  ventasFile = fopen("ventas.dat","rb");
+  remediosFile = fopen("remedios.dat","rb");
+
+  while(fread(&venta,sizeof(struct ventas),1,ventasFile)){
+    while(fread(&remedio,sizeof(struct remedios),1,remediosFile)){
+      for(i=0;i<200;i++){
+        if(strcmp(listaCodigoDrogas[i], "")!=0){
+          if(strcmp(remedio.codigoDroga, listaCodigoDrogas[i])){
+            listaCantidadDrogas[i] += remedio.cantidad;
+            i = 200;
+          }
+        }
+      }
+    }
+  }
+
+ fclose(remediosFile);
+ fclose(ventasFile);
+
+ strcpy(drogaMasUsada, buscarDrogasMasUsada(listaCantidadDrogas, listaCodigoDrogas, 200));
+
+ printf("La drogas mas usada en los medicamentos vendidos es: %s \n", drogaMasUsada);
+
+}
+
+// Dado un array con structs de drogas, devuelve el codigo de la droga mas usada. No funciona, no se como devolver un array
+char *buscarDrogasMasUsada(int listaCantidadDrogas[], char listaCodigoDrogas[][3], int longitudArray){
+  char droga[3];
+  int cantidad = -999;
+
+  int i;
+
+  for(i=0;i<longitudArray;i++){
+    if(listaCantidadDrogas[i]>cantidad){
+      strcpy(droga, listaCodigoDrogas[i]);
+      cantidad = listaCantidadDrogas[i];
+    }
+  }
+
+  return droga;
+}
+
+float buscarCostoDroga(FILE *drogasFile, char codigoDroga[3]){
+  struct drogas droga;
+
+  float costo;
+
+  drogasFile = fopen("drogas.dat","rb");
+  while(fread(&droga,sizeof(struct drogas),1,drogasFile)){
+    if(strcmp(droga.codigoDroga, codigoDroga)==0){
+      costo = droga.costo;
+    }
+  }
+
+  return costo;
 }
 
 void drogaMasBarata(FILE *drogasFile){
@@ -352,6 +422,8 @@ void drogaMasBarata(FILE *drogasFile){
       strcpy(codigoDroga, droga.codigoDroga);
     }
   }
+ fclose(drogasFile);
+
   printf("La droga mas barata es: %s", codigoDroga);
 
 }
