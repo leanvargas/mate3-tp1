@@ -76,7 +76,7 @@ int main ()
           /* case '3': facturacionPorRemedio(remediosFile, drogasFile, ventasFile); break; */
           /* case '4': maxDrogaPorPedido(); break; */
             /* case '5': maxDrogaPorRemedio(); break; */
-          /* case '6': drogaMasBarata(drogasFile); break; */
+          case '6': drogaMasBarata(struct drogas droga); break; 
             /* case '7': mayorCantidadDrogasyRemedios(); break; */
           }
       }
@@ -111,7 +111,6 @@ void ingresarDatos(struct drogas droga, struct remedios remedio[]){
    /* ingresar en 3 archivos diferentes los datos que se piden. */
   int cantidadDrogas=0;
   int i,j;
-
   //cargo una droga
   printf("----------- Datos de la droga ------------ \n");
 
@@ -123,7 +122,7 @@ void ingresarDatos(struct drogas droga, struct remedios remedio[]){
     printf("Ingresar costo de la droga: \n");
     scanf("%f", &droga.costo[i]);
     while(getchar()!='\n');
-  }
+    
 
   //cargo un remedio
   printf("----------- Datos del remedio ------------ \n");
@@ -364,21 +363,17 @@ float buscarCostoDroga(FILE *drogasFile, char codigoDroga[3]){
   return costo;
 }
 
-void drogaMasBarata(FILE *drogasFile){
-  struct drogas droga;
-  float masBarata=999999;
-  char codigoDroga[3];
+void drogaMasBarata(struct drogas droga){
+  float menor_costo=999999;
+  int droga_barata;
 
-  drogasFile = fopen("drogas.data","rb");
-
-  while(fread(&droga,sizeof(struct drogas),1,drogasFile)){
-    if(droga.costo < masBarata){
-      masBarata = droga.costo;
-      strcpy(codigoDroga, droga.codigoDroga);
-    }
+  for(i=0;i<200;i++) {
+	  if(droga.costo[i]<menor_costo){
+		menor_costo=droga.costo[i];
+		droga_barata=droga.codigoDroga[i];		
+	  }
   }
- fclose(drogasFile);
 
-  printf("La droga mas barata es: %s", codigoDroga);
+  printf("La droga mas barata es: %s", droga_barata);
 
 }
