@@ -20,6 +20,8 @@ void ingresarDatos(struct drogas droga, struct remedios remedio[15]);
 void facturacionTotal(struct drogas droga, struct remedios remedio[15]);
 float costoDroga(struct drogas droga, int codigoDroga);
 int calcularVenta(int codigoRemedio, int cantidadVendida, struct drogas droga, struct remedios remedio[15]);
+void facturacionPorRemedio(struct drogas droga, struct remedios remedio[15]);
+void calcularVentaPorRemedio(int codigoRemedio, int cantidadVendida, struct drogas droga, struct remedios remedio[15]);
 
 char menu();
 
@@ -72,8 +74,8 @@ int main ()
       }else{
         switch (opcion)
           {
-          case '1': facturacionTotal(droga, remedio); break;
-          /* case '3': facturacionPorRemedio(remediosFile, drogasFile, ventasFile); break; */
+          case '1': facturacionTotal(droga, &remedio[15]); break;
+          case '2': facturacionPorRemedio(droga, &remedio[15]); break;
           /* case '4': maxDrogaPorPedido(); break; */
             /* case '5': maxDrogaPorRemedio(); break; */
           /* case '6': drogaMasBarata(drogasFile); break; */
@@ -167,6 +169,8 @@ void facturacionTotal(struct drogas droga, struct remedios remedio[15]){
     while(getchar()!='\n');
 
     ventaTotal += calcularVenta(codigoRemedio, cantidadVendida, droga, &remedio[15]);
+
+    nroFactura++;
   }
 
   printf("El valor total de ventas es: %.2f \n", ventaTotal);
@@ -195,12 +199,48 @@ float costoDroga(struct drogas droga, int codDroga){
   for(i=0;i<200;i++){
     if(droga.codigoDroga[i] == codDroga){
       costoDroga = droga.costo[i];
+      i=200;
     }
   }
 
   return costoDroga;
 }
 
+void facturacionPorRemedio(struct drogas droga, struct remedios remedio[15]){
+  int nroFactura = 1;
+  int codigoRemedio;
+  int cantidadVendida;
+  char seguirIngresando = 's';
+
+  while(seguirIngresando=='s'){
+    printf("Ingresar codigo de remedio de la factura %d: \n", nroFactura);
+    scanf("%d", &codigoRemedio);
+    while(getchar()!='\n');
+
+    printf("Ingresar cantidad de remedios vendidos de la factura %d: \n", nroFactura);
+    scanf("%d", &cantidadVendida);
+    while(getchar()!='\n');
+
+    calcularVentaPorRemedio(codigoRemedio, cantidadVendida, droga, &remedio[15]);
+
+    nroFactura++;
+  }
+}
+
+void calcularVentaPorRemedio(int codigoRemedio, int cantidadVendida, struct drogas droga, struct remedios remedio[15]){
+  int i,j;
+  float acum = 0;
+
+  for(i=0;i<15;i++){
+    if(remedio[i].codigoRemedio == codigoRemedio){
+      for(j=0;j<20;j++){
+        acum += costoDroga(droga, remedio[i].codigoDroga[j]) * cantidadVendida * 3;
+        printf("La facturacion por la venta del remedio %d es: %.2f", codigoRemedio, acum);
+        i=15;
+      }
+    }
+  }
+}
 
 /* ------------------------------------------------------------------ */
 int cantRemediosTotales(FILE *remediosFile){
