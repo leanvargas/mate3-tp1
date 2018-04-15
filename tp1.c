@@ -22,6 +22,7 @@ float costoDroga(struct drogas droga, int codigoDroga);
 int calcularVenta(int codigoRemedio, int cantidadVendida, struct drogas droga, struct remedios remedio[15]);
 void facturacionPorRemedio(struct drogas droga, struct remedios remedio[15]);
 void calcularVentaPorRemedio(int codigoRemedio, int cantidadVendida, struct drogas droga, struct remedios remedio[15]);
+void drogaMasBarata(struct drogas droga);
 
 char menu();
 
@@ -78,7 +79,7 @@ int main ()
           case '2': facturacionPorRemedio(droga, &remedio[15]); break;
           /* case '4': maxDrogaPorPedido(); break; */
             /* case '5': maxDrogaPorRemedio(); break; */
-          case '6': drogaMasBarata(struct drogas droga); break; 
+          case '6': drogaMasBarata(droga); break; 
             /* case '7': mayorCantidadDrogasyRemedios(); break; */
           }
       }
@@ -124,7 +125,7 @@ void ingresarDatos(struct drogas droga, struct remedios remedio[]){
     printf("Ingresar costo de la droga: \n");
     scanf("%f", &droga.costo[i]);
     while(getchar()!='\n');
-    
+  }
 
   //cargo un remedio
   printf("----------- Datos del remedio ------------ \n");
@@ -240,6 +241,23 @@ void calcularVentaPorRemedio(int codigoRemedio, int cantidadVendida, struct drog
     }
   }
 }
+
+void drogaMasBarata(struct drogas droga){
+  float menor_costo=999999;
+  int droga_barata;
+
+  for(i=0;i<200;i++) {
+    if(droga.costo[i]<menor_costo){
+      menor_costo=droga.costo[i];
+      droga_barata=droga.codigoDroga[i];
+    }
+  }
+
+  printf("La droga mas barata es: %s", droga_barata);
+
+}
+
+
 
 /* ------------------------------------------------------------------ */
 int cantRemediosTotales(FILE *remediosFile){
@@ -403,17 +421,3 @@ float buscarCostoDroga(FILE *drogasFile, char codigoDroga[3]){
   return costo;
 }
 
-void drogaMasBarata(struct drogas droga){
-  float menor_costo=999999;
-  int droga_barata;
-
-  for(i=0;i<200;i++) {
-	  if(droga.costo[i]<menor_costo){
-		menor_costo=droga.costo[i];
-		droga_barata=droga.codigoDroga[i];		
-	  }
-  }
-
-  printf("La droga mas barata es: %s", droga_barata);
-
-}
