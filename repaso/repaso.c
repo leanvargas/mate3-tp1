@@ -2,48 +2,58 @@
 #include <stdlib.h>
 #include <string.h>
 
-char menuPantalla();
+void menuPantalla(char *opcion);
+int login(char usuario, char contrasena, int *intentos);
 
 int main ()
 {
-    const char USUARIO[4]="123";
-    const char CONTRASENA[4]="121";
+    const char USUARIO[20]="123";
+    const char CONTRASENA[20]="121";
 
     int valorDeHora=300;
     //cargar en una matriz los nombres de los analistas
     //cargar en una matriz los datos a ingresar, siendo las filas los analistas y las columnas los proyectos.
 
-    char opcion='0';
-    char contrasena[4];
-    char usuario[4];
-    int intentos=0;
-    int datosIngresados= 0;
+    int opcion=0, datosIngresados=0;
+    char contrasena[20];
+    char usuario[20];
 
-
-    do{
-      printf("Ingresar usuario: \n");
-      scanf("%s", usuario);
-      //este while es porque el scanf no funciona en linux
-      while(getchar() !='\n');
-      printf("Ingresar contrasenia: \n");
-      scanf("%s", contrasena);
-      while(getchar() !='\n');
-      intentos ++;
-    }while(((strcmp(usuario, USUARIO) != 0) || (strcmp(contrasena, CONTRASENA) != 0)) && (intentos<3));
-
-    //salgo del programa al haber hecho mas de 3 intentos
-    if (intentos==3){
-      return 0;
+    /* =================== */
+    /* Funcion de login */
+    /* =================== */
+    if (login(usuario, contrasena, &intentos)==3){
+      printf("Se ingresaron mal el usuario y/o password");
+      return 1;
     }
+    /* ===================== */
 
-    while(opcion!='9'){
-      opcion = menuPantalla();
+    while(opcion<=9){
+      menuPantalla(int &opcion);
+      menu(opcion);
     }
 
     return 0;
 }
 
-void menu(char opcion){
+int login(char usuario, char contrasena){
+  int intentos=0;
+
+  do{
+    printf("Ingresar usuario: \n");
+    scanf("%s", usuario);
+    //este while es porque el scanf no funciona en linux
+    while(getchar() !='\n');
+    printf("Ingresar contrasenia: \n");
+    scanf("%s", contrasena);
+    while(getchar() !='\n');
+    intentos ++;
+  }while(((strcmp(usuario, USUARIO) != 0) || (strcmp(contrasena, CONTRASENA) != 0)) && (intentos<3));
+
+  return intentos;
+}
+
+
+void menu(int opcion){
       switch (opcion)
         {
         /* case '0': ingresoDeDatos; break; */
@@ -58,8 +68,7 @@ void menu(char opcion){
         }
 }
 
-char menuPantalla(){
-  char opcion;
+void menuPantalla(int *opcion){
 
   do{
     printf("MENU DEL PROGRAMA\n\n");
@@ -75,10 +84,8 @@ char menuPantalla(){
     printf("9:Salir del programa\n");
 
     printf("ingrese una opcion\n");
-    scanf("%c", &opcion);
+    scanf("%d", opcion);
     while(getchar() !='\n');
   }while(opcion<'0' || opcion>'9');
-
-  return opcion;
 
 }
