@@ -2,41 +2,44 @@
 #include <stdlib.h>
 #include <string.h>
 
-void menuPantalla(char *opcion);
-int login(char usuario, char contrasena, int *intentos);
+void menuPantalla(int *opcion);
+void menu(int opcion);
+int login(char *USUARIO, char *CONTRASENA);
 
 int main ()
 {
-    const char USUARIO[20]="123";
-    const char CONTRASENA[20]="121";
+    char USUARIO[20]="123";
+    char CONTRASENA[20]="121";
 
-    int valorDeHora=300;
+    int valorDeHora, numProy;
     //cargar en una matriz los nombres de los analistas
+    char analistas[10][50];
     //cargar en una matriz los datos a ingresar, siendo las filas los analistas y las columnas los proyectos.
+    int proyectos[numProy][4];
 
     int opcion=0, datosIngresados=0;
-    char contrasena[20];
-    char usuario[20];
 
     /* =================== */
     /* Funcion de login */
     /* =================== */
-    if (login(usuario, contrasena, &intentos)==3){
-      printf("Se ingresaron mal el usuario y/o password");
+    if (login(USUARIO, CONTRASENA)==3){
+      printf("Se ingresaron mal el usuario y/o password\n");
       return 1;
     }
     /* ===================== */
 
     while(opcion<=9){
-      menuPantalla(int &opcion);
+      menuPantalla(&opcion);
       menu(opcion);
     }
 
     return 0;
 }
 
-int login(char usuario, char contrasena){
+int login(char *USUARIO, char *CONTRASENA){
   int intentos=0;
+  char contrasena[20];
+  char usuario[20];
 
   do{
     printf("Ingresar usuario: \n");
@@ -83,9 +86,11 @@ void menuPantalla(int *opcion){
     printf("8:Sueldos en forma descendente de los analistas\n");
     printf("9:Salir del programa\n");
 
-    printf("ingrese una opcion\n");
+    printf("ingresar una opcion\n");
     scanf("%d", opcion);
     while(getchar() !='\n');
-  }while(opcion<'0' || opcion>'9');
+  }while(*opcion<0 || *opcion>9);
 
 }
+
+
