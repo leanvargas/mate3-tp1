@@ -3,8 +3,9 @@
 #include <string.h>
 
 void menuPantalla(int *opcion);
-void menu(int opcion);
 int login(char *USUARIO, char *CONTRASENA);
+void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c]);
+void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c]);
 
 int main ()
 {
@@ -13,7 +14,8 @@ int main ()
 
     int valorDeHora, numProy;
     //cargar en una matriz los nombres de los analistas
-    char analistas[10][50];
+    int analistasF=2, analistasC=50;
+    char analistas[analistasF][analistasC];
     //cargar en una matriz los datos a ingresar, siendo las filas los analistas y las columnas los proyectos.
     int proyectos[numProy][4];
 
@@ -28,10 +30,25 @@ int main ()
     }
     /* ===================== */
 
-    while(opcion<=9){
+    /* ==================== */
+    /* Menu del programa */
+    /* ==================== */
+    do{
       menuPantalla(&opcion);
-      menu(opcion);
-    }
+      switch (opcion)
+        {
+        case 0 :ingresoDeDatos(&valorDeHora, analistasF, analistasC, analistas); break;
+          /* case '1': horasTotalesPorAnalista; break; */
+          /* case '2': horasPorProyectoPorAnalista; break; */
+          /* case '3': horasTotalesPorProyecto; break; */
+          /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
+          /* case '5': SueldoDeCadaAnalista; break; */
+          /* case '6': AnalistaQueCrobroMas; break; */
+          /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
+          /* case '8': sueldosDeAnalista; break; */
+        }
+    }while(opcion<9);
+    /* ======================= */
 
     return 0;
 }
@@ -56,21 +73,6 @@ int login(char *USUARIO, char *CONTRASENA){
 }
 
 
-void menu(int opcion){
-      switch (opcion)
-        {
-        /* case '0': ingresoDeDatos; break; */
-        /* case '1': horasTotalesPorAnalista; break; */
-        /* case '2': horasPorProyectoPorAnalista; break; */
-        /* case '3': horasTotalesPorProyecto; break; */
-        /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
-        /* case '5': SueldoDeCadaAnalista; break; */
-        /* case '6': AnalistaQueCrobroMas; break; */
-        /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
-        /* case '8': sueldosDeAnalista; break; */
-        }
-}
-
 void menuPantalla(int *opcion){
 
   do{
@@ -93,4 +95,29 @@ void menuPantalla(int *opcion){
 
 }
 
+void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c]){
+  int i=0;
+
+  printf("Ingresar el valor de la hora \n");
+  scanf("%d", valorDeHora);
+  while(getchar() !='\n');
+
+  for(int i;i<f;i++){
+    printf("Ingresar analista nro %d \n", i+1);
+    scanf("%s", analistas[i]);
+    while(getchar() !='\n');
+  }
+
+  imprimirDatosIngresados(valorDeHora, f, c, analistas);
+}
+
+void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c]){
+  int i=0;
+
+  printf("El valor de la hora es: %d\n", *valorDeHora);
+
+  for(int i;i<f;i++){
+    printf("El analista nro %d es: %s\n", i+1, analistas[i]);
+  }
+}
 
