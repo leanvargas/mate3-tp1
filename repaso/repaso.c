@@ -7,6 +7,7 @@ void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF,
 int login(char *USUARIO, char *CONTRASENA);
 void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
 void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
+void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
 
 int main ()
 {
@@ -23,6 +24,8 @@ int main ()
        2da columna: Numero de analista
        3er columna: Numero de proyecto
        4ta columna: Cantidad de hs trabajadas
+
+       Se supone que los proyectos van del 1 al 15, que puede haber 15 en total nada mas
      */
     int proyectosF=1, proyectosC=4, proyectos[proyectosF][proyectosC];
 
@@ -46,8 +49,8 @@ int main ()
         {
         case 0 :ingresoDeDatos(&valorDeHora, analistasF, analistasC, analistas, &proyectosF, proyectosC, proyectos); break;
         case 1: horasTotalesPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break;
-          /* case '2': horasPorProyectoPorAnalista; break; */
-          /* case '3': horasTotalesPorProyecto; break; */
+        /* case 2: horasPorProyectoPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break; */
+        case 3: horasTotalesPorProyecto(proyectosF, proyectosC, proyectos); break;
           /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
           /* case '5': SueldoDeCadaAnalista; break; */
           /* case '6': AnalistaQueCrobroMas; break; */
@@ -171,5 +174,22 @@ void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF,
     }
     printf("El analista nro %d trabajo %d horas\n", i+1, horasAcumuladas);
     horasAcumuladas=0;
+  }
+}
+
+void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]){
+  int i, j, horasAcumuladas=0, nroProyecto;
+
+  for(i=0;i<15;i++){
+    nroProyecto=i+1;
+    for(j=0;j<proyectosF;j++){
+      if(nroProyecto==proyectos[j][2]){
+        horasAcumuladas+=proyectos[j][3];
+      }
+    }
+    if(horasAcumuladas!=0){
+      printf("Se trabajo %d horas en el proyecto %d\n", horasAcumuladas, nroProyecto);
+      horasAcumuladas=0;
+    }
   }
 }
