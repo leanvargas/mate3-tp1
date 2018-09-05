@@ -10,7 +10,7 @@ void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c
 int main ()
 {
     char USUARIO[20]="123";
-    char CONTRASENA[20]="121";
+    char CONTRASENA[20]="123";
 
     int valorDeHora;
     //cargar en una matriz los nombres de los analistas
@@ -103,7 +103,7 @@ void menuPantalla(int *opcion){
 
 void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
   //Se ingresa la variable proyectosF como puntero ya que se va a modificar dependiendo la cant de trabajos que haya
-  int i, j, numDeTrabajo=1;
+  int i, numDeTrabajo=1;
 
   printf("Ingresar el valor de la hora: \n");
   scanf("%d", valorDeHora);
@@ -115,33 +115,32 @@ void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *p
     while(getchar() !='\n');
   }
 
-  for(i=0;i<*proyectosF;i++){
-    for(j=0;j<proyectosC;j++){
-      printf("Ingresar nro de trabajo: \n");
-      scanf("%d", &numDeTrabajo);
-      while(getchar() !='\n');
-      if(numDeTrabajo==0){
-        //dejo de cargar proyectos y agrego a proyectosF la cantidad de filas que tiene la matriz
-        *proyectosF=i;
-        i=0;
-        j=proyectosC;
-      }else{
-        proyectos[i][j] = numDeTrabajo;
-        printf("Ingresar nro de analista: \n");
-        scanf("%d", &proyectos[i][j]);
-        while(getchar() !='\n');
-        printf("Ingresar nro de proyecto: \n");
-        scanf("%d", &proyectos[i][j]);
-        while(getchar() !='\n');
-        printf("Ingresar nro de horas trabajadas: \n");
-        scanf("%d", &proyectos[i][j]);
-        while(getchar() !='\n');
-      }
-    }
-  }
+  i=0;
+  printf("Ingresar nro de trabajo: \n");
+  scanf("%d", &numDeTrabajo);
+  while(getchar() !='\n');
+  do{
+    proyectos[i][0] = numDeTrabajo;
+    printf("Ingresar nro de analista: \n");
+    scanf("%d", &proyectos[i][1]);
+    while(getchar() !='\n');
+    printf("Ingresar nro de proyecto: \n");
+    scanf("%d", &proyectos[i][2]);
+    while(getchar() !='\n');
+    printf("Ingresar nro de horas trabajadas: \n");
+    scanf("%d", &proyectos[i][3]);
+    while(getchar() !='\n');
+    printf("Ingresar nro de trabajo: \n");
+    scanf("%d", &numDeTrabajo);
+    while(getchar() !='\n');
+    i++;
+  }while(numDeTrabajo!=0);
+  *proyectosF=i;
 
   imprimirDatosIngresados(valorDeHora, f, c, analistas, proyectosF, proyectosC, proyectos);
 }
+
+
 
 void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
   int i;
@@ -151,8 +150,9 @@ void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c
   for(i=0;i<f;i++){
     printf("El analista nro %d es: %s\n", i+1, analistas[i]);
   }
+
+  printf("Trabajos: \n");
   for(i=0;i<*proyectosF;i++){
-    printf("Trabajos: \n");
     printf("Numero \t Analista \t Proyecto \t Horas Trabajadas \n");
     printf("%d \t %d \t\t %d \t\t %d \n", proyectos[i][0], proyectos[i][1], proyectos[i][2], proyectos[i][3]);
   }
