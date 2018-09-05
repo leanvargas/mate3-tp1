@@ -3,6 +3,7 @@
 #include <string.h>
 
 void menuPantalla(int *opcion);
+void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
 int login(char *USUARIO, char *CONTRASENA);
 void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
 void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
@@ -13,7 +14,7 @@ int main ()
     char CONTRASENA[20]="123";
 
     int valorDeHora;
-    //cargar en una matriz los nombres de los analistas
+    //cargar en una matriz los nombres de los analistas, el nro de analista es el numero de fila + 1
     int analistasF=2, analistasC=50;
     char analistas[analistasF][analistasC];
 
@@ -44,7 +45,7 @@ int main ()
       switch (opcion)
         {
         case 0 :ingresoDeDatos(&valorDeHora, analistasF, analistasC, analistas, &proyectosF, proyectosC, proyectos); break;
-          /* case '1': horasTotalesPorAnalista; break; */
+        case 1: horasTotalesPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break;
           /* case '2': horasPorProyectoPorAnalista; break; */
           /* case '3': horasTotalesPorProyecto; break; */
           /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
@@ -158,3 +159,17 @@ void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c
   }
 }
 
+void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]){
+  int i, j, horasAcumuladas=0, nroAnalista;
+
+  for(i=0;i<f;i++){
+    nroAnalista=i+1;
+    for(j=0;j<proyectosF;j++){
+      if(nroAnalista==proyectos[j][1]){
+        horasAcumuladas+=proyectos[j][3];
+      }
+    }
+    printf("El analista nro %d trabajo %d horas\n", i+1, horasAcumuladas);
+    horasAcumuladas=0;
+  }
+}
