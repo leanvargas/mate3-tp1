@@ -5,8 +5,8 @@
 void menuPantalla(int *opcion);
 void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
 int login(char *USUARIO, char *CONTRASENA);
-void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
-void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
+void ingresoDeDatos(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
+void imprimirDatosIngresados(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
 void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
 
 int main ()
@@ -14,10 +14,11 @@ int main ()
     char USUARIO[20]="123";
     char CONTRASENA[20]="123";
 
-    int valorDeHora;
     //cargar en una matriz los nombres de los analistas, el nro de analista es el numero de fila + 1
     int analistasF=2, analistasC=50;
     char analistas[analistasF][analistasC];
+    //el valor de la hora es un array donde la posicion + 1 es el nro de analista
+    int valorDeHora[analistasF];
 
     /* cargar en una matriz los datos a ingresar, siendo:
        1ra columna: Nro de trabajo
@@ -47,7 +48,7 @@ int main ()
       menuPantalla(&opcion);
       switch (opcion)
         {
-        case 0 :ingresoDeDatos(&valorDeHora, analistasF, analistasC, analistas, &proyectosF, proyectosC, proyectos); break;
+        case 0 :ingresoDeDatos(analistasF, valorDeHora, analistasC, analistas, &proyectosF, proyectosC, proyectos); break;
         case 1: horasTotalesPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break;
         /* case 2: horasPorProyectoPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break; */
         case 3: horasTotalesPorProyecto(proyectosF, proyectosC, proyectos); break;
@@ -105,17 +106,16 @@ void menuPantalla(int *opcion){
 
 }
 
-void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
+void ingresoDeDatos(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
   //Se ingresa la variable proyectosF como puntero ya que se va a modificar dependiendo la cant de trabajos que haya
   int i, numDeTrabajo=1;
-
-  printf("Ingresar el valor de la hora: \n");
-  scanf("%d", valorDeHora);
-  while(getchar() !='\n');
 
   for(i=0;i<f;i++){
     printf("Ingresar analista nro: %d \n", i+1);
     scanf("%s", analistas[i]);
+    while(getchar() !='\n');
+    printf("Ingresar valor de hora del analista nro: %d \n", i+1);
+    scanf("%d", &valorDeHora[i]);
     while(getchar() !='\n');
   }
 
@@ -123,7 +123,7 @@ void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *p
   printf("Ingresar nro de trabajo: \n");
   scanf("%d", &numDeTrabajo);
   while(getchar() !='\n');
-  do{
+  while(numDeTrabajo!=0){
     proyectos[i][0] = numDeTrabajo;
     printf("Ingresar nro de analista: \n");
     scanf("%d", &proyectos[i][1]);
@@ -138,21 +138,19 @@ void ingresoDeDatos(int *valorDeHora, int f, int c, char analistas[f][c], int *p
     scanf("%d", &numDeTrabajo);
     while(getchar() !='\n');
     i++;
-  }while(numDeTrabajo!=0);
+  }
   *proyectosF=i;
 
-  imprimirDatosIngresados(valorDeHora, f, c, analistas, proyectosF, proyectosC, proyectos);
+  imprimirDatosIngresados(f, valorDeHora, c, analistas, proyectosF, proyectosC, proyectos);
 }
 
 
 
-void imprimirDatosIngresados(int *valorDeHora, int f, int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
+void imprimirDatosIngresados(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
   int i;
 
-  printf("El valor de la hora es: %d\n", *valorDeHora);
-
   for(i=0;i<f;i++){
-    printf("El analista nro %d es: %s\n", i+1, analistas[i]);
+    printf("El analista nro %d es: %s . Y el valor de la hora es de: %d\n", i+1, analistas[i], valorDeHora[i]);
   }
 
   printf("Trabajos: \n");
