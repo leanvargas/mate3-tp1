@@ -20,6 +20,7 @@ void horasPorProyectoPorAnalista(int c, char analistas[CANTIDAD_ANALISTAS][c], i
 void QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void cantAnalistaTrabajaronMenosDe5enAlgunProyecto(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 
 int main ()
 {
@@ -67,7 +68,7 @@ int main ()
         case 4: QueAnalistaTrabajoMenosEnProyecto1(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 5: SueldoDeCadaAnalista(valorDeHora, analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 6: AnalistaQueCrobroMas(valorDeHora, analistasC, analistas, trabajosF, trabajosC, trabajos); break;
-          /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
+        case 7: cantAnalistaTrabajaronMenosDe5enAlgunProyecto(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
           /* case '8': sueldosDeAnalista; break; */
         }
     }while(opcion<9);
@@ -279,4 +280,28 @@ void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], int c, char ana
     sueldo = 0;
   }
   printf("El nombre del analista que mas cobra es: %s\n", analistas[analistaMasCobro]);
+}
+
+void cantAnalistaTrabajaronMenosDe5enAlgunProyecto(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, k, horasAcumuladas=0, cantAnalistas=0;
+
+  //el nro de analista es i+1
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //recorro los 15 proyectos
+    for(j=1;j<16;j++){
+      for(k=0;k<trabajosF;k++){
+        if(i+1==trabajos[k][1]){
+          if(j==trabajos[k][2]){
+            horasAcumuladas+=trabajos[k][3];
+          }
+        }
+      }
+      if(horasAcumuladas < 5){
+        cantAnalistas += 1;
+        j=16;
+      }
+      horasAcumuladas=0;
+    }
+  }
+  printf("La cantidad de analistas que trabajaron menos de 5 horas en algunproyecto es: %d\n", cantAnalistas);
 }
