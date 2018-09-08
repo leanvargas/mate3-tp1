@@ -17,6 +17,7 @@ void ingresoDeDatos(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[C
 void imprimirDatosIngresados(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
 void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void horasPorProyectoPorAnalista(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 
 int main ()
 {
@@ -61,7 +62,7 @@ int main ()
         case 1: horasTotalesPorAnalista(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 2: horasPorProyectoPorAnalista(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 3: horasTotalesPorProyecto(trabajosF, trabajosC, trabajos); break;
-          /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
+        case 4: QueAnalistaTrabajoMenosEnProyecto1(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
           /* case '5': SueldoDeCadaAnalista; break; */
           /* case '6': AnalistaQueCrobroMas; break; */
           /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
@@ -220,4 +221,25 @@ void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajos
       horasAcumuladas=0;
     }
   }
+}
+
+void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  //Si hay mas de un analista que trabajo la misma cantidad de horas, se devuelve el primero encontrado.
+  int i, k, horasAcumuladas=0, analistaMenosTrabajo=1, horasAnalistaMenosTrabajo=0;
+
+  //el nro de analista es i+1
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    for(k=0;k<trabajosF;k++){
+      if(i+1==trabajos[k][1]){
+        if(1==trabajos[k][2]){
+          horasAcumuladas+=trabajos[k][3];
+        }
+      }
+    }
+    if(horasAcumuladas < horasAnalistaMenosTrabajo){
+      analistaMenosTrabajo = i+1;
+      horasAnalistaMenosTrabajo = horasAcumuladas;
+    }
+  }
+  printf("El analista que menos trabajo en el proyecto 1 es: %s\n", analistas[analistaMenosTrabajo]);
 }
