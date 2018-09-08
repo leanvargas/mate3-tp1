@@ -13,11 +13,12 @@
 void menuPantalla(int *opcion);
 void horasTotalesPorAnalista(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 int login(char *USUARIO, char *CONTRASENA);
-void ingresoDeDatos(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
-void imprimirDatosIngresados(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
+void ingresoDeDatos(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
+void imprimirDatosIngresados(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
 void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void horasPorProyectoPorAnalista(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
-void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 
 int main ()
 {
@@ -28,7 +29,7 @@ int main ()
     int analistasC=50;
     char analistas[CANTIDAD_ANALISTAS][analistasC];
     //el valor de la hora es un array donde la posicion + 1 es el nro de analista
-    int valorDeHora[CANTIDAD_ANALISTAS];
+    float valorDeHora[CANTIDAD_ANALISTAS];
 
     /* cargar en una matriz los datos a ingresar, siendo:
        1ra columna: Nro de trabajo
@@ -63,7 +64,7 @@ int main ()
         case 2: horasPorProyectoPorAnalista(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 3: horasTotalesPorProyecto(trabajosF, trabajosC, trabajos); break;
         case 4: QueAnalistaTrabajoMenosEnProyecto1(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
-          /* case '5': SueldoDeCadaAnalista; break; */
+        case 5: SueldoDeCadaAnalista(valorDeHora, analistasC, analistas, trabajosF, trabajosC, trabajos); break;
           /* case '6': AnalistaQueCrobroMas; break; */
           /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
           /* case '8': sueldosDeAnalista; break; */
@@ -115,7 +116,7 @@ void menuPantalla(int *opcion){
 
 }
 
-void ingresoDeDatos(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
+void ingresoDeDatos(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
   //Se ingresa la variable trabajosF como puntero ya que se va a modificar dependiendo la cant de trabajos que haya
   int i, numDeTrabajo=1;
 
@@ -123,8 +124,8 @@ void ingresoDeDatos(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[C
     printf("Ingresar nombre del analista nro: %d \n", i+1);
     scanf("%s", analistas[i]);
     while(getchar() !='\n');
-    printf("Ingresar valor de hora del analista nro: %d \n", i+1);
-    scanf("%d", &valorDeHora[i]);
+    printf("Ingresar valor de hora del analista\n");
+    scanf("%f", &valorDeHora[i]);
     while(getchar() !='\n');
   }
 
@@ -155,11 +156,11 @@ void ingresoDeDatos(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[C
 
 
 
-void imprimirDatosIngresados(int valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
+void imprimirDatosIngresados(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
   int i;
 
   for(i=0;i<CANTIDAD_ANALISTAS;i++){
-    printf("El analista nro %d es: %s . Y el valor de la hora es de: %d\n", i+1, analistas[i], valorDeHora[i]);
+    printf("El analista nro %d es: %s . Y el valor de la hora es de: %0.2f\n", i+1, analistas[i], valorDeHora[i]);
   }
 
   printf("Trabajos: \n");
@@ -242,4 +243,19 @@ void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTA
     }
   }
   printf("El analista que menos trabajo en el proyecto 1 es: %s\n", analistas[analistaMenosTrabajo]);
+}
+
+void  SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, horasAcumuladas=0;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //el nro de analista es i+1
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        horasAcumuladas+=trabajos[j][3];
+      }
+    }
+    printf("El sueldo del analista %s es: %0.2f\n", analistas[i], horasAcumuladas*valorDeHora[i]);
+    horasAcumuladas=0;
+  }
 }
