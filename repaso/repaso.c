@@ -19,6 +19,7 @@ void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajos
 void horasPorProyectoPorAnalista(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 
 int main ()
 {
@@ -65,7 +66,7 @@ int main ()
         case 3: horasTotalesPorProyecto(trabajosF, trabajosC, trabajos); break;
         case 4: QueAnalistaTrabajoMenosEnProyecto1(analistasC, analistas, trabajosF, trabajosC, trabajos); break;
         case 5: SueldoDeCadaAnalista(valorDeHora, analistasC, analistas, trabajosF, trabajosC, trabajos); break;
-          /* case '6': AnalistaQueCrobroMas; break; */
+        case 6: AnalistaQueCrobroMas(valorDeHora, analistasC, analistas, trabajosF, trabajosC, trabajos); break;
           /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
           /* case '8': sueldosDeAnalista; break; */
         }
@@ -224,9 +225,9 @@ void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajos
   }
 }
 
-void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+void QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
   //Si hay mas de un analista que trabajo la misma cantidad de horas, se devuelve el primero encontrado.
-  int i, k, horasAcumuladas=0, analistaMenosTrabajo=1, horasAnalistaMenosTrabajo=0;
+  int i, k, horasAcumuladas=0, analistaMenosTrabajo=1, horasAnalistaMenosTrabajo=9999999;
 
   //el nro de analista es i+1
   for(i=0;i<CANTIDAD_ANALISTAS;i++){
@@ -241,11 +242,12 @@ void  QueAnalistaTrabajoMenosEnProyecto1(int c, char analistas[CANTIDAD_ANALISTA
       analistaMenosTrabajo = i+1;
       horasAnalistaMenosTrabajo = horasAcumuladas;
     }
+    horasAcumuladas=0;
   }
   printf("El analista que menos trabajo en el proyecto 1 es: %s\n", analistas[analistaMenosTrabajo]);
 }
 
-void  SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
   int i, j, horasAcumuladas=0;
 
   for(i=0;i<CANTIDAD_ANALISTAS;i++){
@@ -258,4 +260,23 @@ void  SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], int c, char an
     printf("El sueldo del analista %s es: %0.2f\n", analistas[i], horasAcumuladas*valorDeHora[i]);
     horasAcumuladas=0;
   }
+}
+
+void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], int c, char analistas[CANTIDAD_ANALISTAS][c], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, analistaMasCobro=0, sueldoAnalistaMasCobro=0;
+  float sueldo=0;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        sueldo+=trabajos[j][3]*valorDeHora[i];
+      }
+    }
+    if(sueldo > sueldoAnalistaMasCobro){
+      analistaMasCobro= i;
+      sueldoAnalistaMasCobro = sueldo;
+    }
+    sueldo = 0;
+  }
+  printf("El nombre del analista que mas cobra es: %s\n", analistas[analistaMasCobro]);
 }
