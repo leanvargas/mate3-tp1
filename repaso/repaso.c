@@ -2,12 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* ========== NOTA =========== */
+/* En Linux no funciona el gets y los scanf tienen que estar seguidos de un: */
+/* while(getchar() !='\n'); */
+/* Si se usa en windows, se puede usar un gets directamente. */
+/*   ========================= */
+
+#define CANTIDAD_ANALISTAS 2
+#define LONG_NOMBRE_ANALISTA 50
+
 void menuPantalla(int *opcion);
-void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
+void horasTotalesPorAnalista(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 int login(char *USUARIO, char *CONTRASENA);
-void ingresoDeDatos(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
-void imprimirDatosIngresados(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]);
-void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]);
+void ingresoDeDatos(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
+void imprimirDatosIngresados(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]);
+void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void horasPorProyectoPorAnalista(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void QueAnalistaTrabajoMenosEnProyecto1(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void cantAnalistaTrabajaronMenosDe5enAlgunProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void sueldosDeAnalistasOrdenados(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
+void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA]);
+float valorDeHoraDeAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], char nombreAnalista[LONG_NOMBRE_ANALISTA]);
 
 int main ()
 {
@@ -15,10 +32,9 @@ int main ()
     char CONTRASENA[20]="123";
 
     //cargar en una matriz los nombres de los analistas, el nro de analista es el numero de fila + 1
-    int analistasF=2, analistasC=50;
-    char analistas[analistasF][analistasC];
+    char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA];
     //el valor de la hora es un array donde la posicion + 1 es el nro de analista
-    int valorDeHora[analistasF];
+    float valorDeHora[CANTIDAD_ANALISTAS];
 
     /* cargar en una matriz los datos a ingresar, siendo:
        1ra columna: Nro de trabajo
@@ -26,11 +42,11 @@ int main ()
        3er columna: Numero de proyecto
        4ta columna: Cantidad de hs trabajadas
 
-       Se supone que los proyectos van del 1 al 15, que puede haber 15 en total nada mas
+       Supongo que los proyectos van del 1 al 15.
      */
-    int proyectosF=1, proyectosC=4, proyectos[proyectosF][proyectosC];
+    int trabajosF=1, trabajosC=4, trabajos[trabajosF][trabajosC];
 
-    int opcion=0, datosIngresados=0;
+    int opcion=0;
 
     /* =================== */
     /* Funcion de login */
@@ -48,15 +64,15 @@ int main ()
       menuPantalla(&opcion);
       switch (opcion)
         {
-        case 0 :ingresoDeDatos(analistasF, valorDeHora, analistasC, analistas, &proyectosF, proyectosC, proyectos); break;
-        case 1: horasTotalesPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break;
-        /* case 2: horasPorProyectoPorAnalista(analistasF, analistasC, analistas, proyectosF, proyectosC, proyectos); break; */
-        case 3: horasTotalesPorProyecto(proyectosF, proyectosC, proyectos); break;
-          /* case '4': QueAnalistaTrabajoMenosEnProyecto1; break; */
-          /* case '5': SueldoDeCadaAnalista; break; */
-          /* case '6': AnalistaQueCrobroMas; break; */
-          /* case '7': cantAnalistaTrabajaronMenosDe5enAlgunProyecto; break; */
-          /* case '8': sueldosDeAnalista; break; */
+        case 0 :ingresoDeDatos(valorDeHora, analistas, &trabajosF, trabajosC, trabajos); break;
+        case 1: horasTotalesPorAnalista(analistas, trabajosF, trabajosC, trabajos); break;
+        case 2: horasPorProyectoPorAnalista(analistas, trabajosF, trabajosC, trabajos); break;
+        case 3: horasTotalesPorProyecto(trabajosF, trabajosC, trabajos); break;
+        case 4: QueAnalistaTrabajoMenosEnProyecto1(analistas, trabajosF, trabajosC, trabajos); break;
+        case 5: SueldoDeCadaAnalista(valorDeHora, analistas, trabajosF, trabajosC, trabajos); break;
+        case 6: AnalistaQueCrobroMas(valorDeHora, analistas, trabajosF, trabajosC, trabajos); break;
+        case 7: cantAnalistaTrabajaronMenosDe5enAlgunProyecto(trabajosF, trabajosC, trabajos); break;
+        case 8: sueldosDeAnalistasOrdenados(valorDeHora, analistas, trabajosF, trabajosC, trabajos); break;
         }
     }while(opcion<9);
     /* ======================= */
@@ -72,7 +88,6 @@ int login(char *USUARIO, char *CONTRASENA){
   do{
     printf("Ingresar usuario: \n");
     scanf("%s", usuario);
-    //este while es porque el scanf no funciona en linux
     while(getchar() !='\n');
     printf("Ingresar contrasenia: \n");
     scanf("%s", contrasena);
@@ -106,16 +121,16 @@ void menuPantalla(int *opcion){
 
 }
 
-void ingresoDeDatos(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
-  //Se ingresa la variable proyectosF como puntero ya que se va a modificar dependiendo la cant de trabajos que haya
+void ingresoDeDatos(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
+  //Se ingresa la variable trabajosF como puntero ya que se va a modificar dependiendo la cant de trabajos que haya
   int i, numDeTrabajo=1;
 
-  for(i=0;i<f;i++){
-    printf("Ingresar analista nro: %d \n", i+1);
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    printf("Ingresar nombre del analista nro: %d \n", i+1);
     scanf("%s", analistas[i]);
     while(getchar() !='\n');
-    printf("Ingresar valor de hora del analista nro: %d \n", i+1);
-    scanf("%d", &valorDeHora[i]);
+    printf("Ingresar valor de hora del analista\n");
+    scanf("%f", &valorDeHora[i]);
     while(getchar() !='\n');
   }
 
@@ -124,65 +139,87 @@ void ingresoDeDatos(int f, int valorDeHora[f], int c, char analistas[f][c], int 
   scanf("%d", &numDeTrabajo);
   while(getchar() !='\n');
   while(numDeTrabajo!=0){
-    proyectos[i][0] = numDeTrabajo;
+    trabajos[i][0] = numDeTrabajo;
     printf("Ingresar nro de analista: \n");
-    scanf("%d", &proyectos[i][1]);
+    scanf("%d", &trabajos[i][1]);
     while(getchar() !='\n');
     printf("Ingresar nro de proyecto: \n");
-    scanf("%d", &proyectos[i][2]);
+    scanf("%d", &trabajos[i][2]);
     while(getchar() !='\n');
     printf("Ingresar nro de horas trabajadas: \n");
-    scanf("%d", &proyectos[i][3]);
+    scanf("%d", &trabajos[i][3]);
     while(getchar() !='\n');
     printf("Ingresar nro de trabajo: \n");
     scanf("%d", &numDeTrabajo);
     while(getchar() !='\n');
     i++;
   }
-  *proyectosF=i;
+  *trabajosF=i;
 
-  imprimirDatosIngresados(f, valorDeHora, c, analistas, proyectosF, proyectosC, proyectos);
+  imprimirDatosIngresados(valorDeHora, analistas, trabajosF, trabajosC, trabajos);
 }
 
 
 
-void imprimirDatosIngresados(int f, int valorDeHora[f], int c, char analistas[f][c], int *proyectosF, int proyectosC, int proyectos[*proyectosF][proyectosC]){
+void imprimirDatosIngresados(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int *trabajosF, int trabajosC, int trabajos[*trabajosF][trabajosC]){
   int i;
 
-  for(i=0;i<f;i++){
-    printf("El analista nro %d es: %s . Y el valor de la hora es de: %d\n", i+1, analistas[i], valorDeHora[i]);
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    printf("El analista nro %d es: %s . Y el valor de la hora es de: %0.2f\n", i+1, analistas[i], valorDeHora[i]);
   }
 
   printf("Trabajos: \n");
-  for(i=0;i<*proyectosF;i++){
+  for(i=0;i<*trabajosF;i++){
     printf("Numero \t Analista \t Proyecto \t Horas Trabajadas \n");
-    printf("%d \t %d \t\t %d \t\t %d \n", proyectos[i][0], proyectos[i][1], proyectos[i][2], proyectos[i][3]);
+    printf("%d \t %d \t\t %d \t\t %d \n", trabajos[i][0], trabajos[i][1], trabajos[i][2], trabajos[i][3]);
   }
 }
 
-void horasTotalesPorAnalista(int f, int c, char analistas[f][c], int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]){
-  int i, j, horasAcumuladas=0, nroAnalista;
+void horasTotalesPorAnalista(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, horasAcumuladas=0;
 
-  for(i=0;i<f;i++){
-    nroAnalista=i+1;
-    for(j=0;j<proyectosF;j++){
-      if(nroAnalista==proyectos[j][1]){
-        horasAcumuladas+=proyectos[j][3];
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //el nro de analista es i+1
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        horasAcumuladas+=trabajos[j][3];
       }
     }
-    printf("El analista nro %d trabajo %d horas\n", i+1, horasAcumuladas);
+    printf("El analista %s trabajo %d horas\n", analistas[i], horasAcumuladas);
     horasAcumuladas=0;
   }
 }
 
-void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proyectosF][proyectosC]){
+void horasPorProyectoPorAnalista(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, k, horasAcumuladas=0;
+
+  //el nro de analista es i+1
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //recorro los 15 proyectos
+    for(j=1;j<16;j++){
+      for(k=0;k<trabajosF;k++){
+        if(i+1==trabajos[k][1]){
+          if(j==trabajos[k][2]){
+            horasAcumuladas+=trabajos[k][3];
+          }
+        }
+      }
+      if(horasAcumuladas!=0){
+        printf("El analista %s trabajo %d horas en el proyecto %d\n", analistas[i], horasAcumuladas, j);
+        horasAcumuladas=0;
+      }
+    }
+  }
+}
+
+void horasTotalesPorProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
   int i, j, horasAcumuladas=0, nroProyecto;
 
   for(i=0;i<15;i++){
     nroProyecto=i+1;
-    for(j=0;j<proyectosF;j++){
-      if(nroProyecto==proyectos[j][2]){
-        horasAcumuladas+=proyectos[j][3];
+    for(j=0;j<trabajosF;j++){
+      if(nroProyecto==trabajos[j][2]){
+        horasAcumuladas+=trabajos[j][3];
       }
     }
     if(horasAcumuladas!=0){
@@ -190,4 +227,148 @@ void horasTotalesPorProyecto(int proyectosF, int proyectosC, int proyectos[proye
       horasAcumuladas=0;
     }
   }
+}
+
+void QueAnalistaTrabajoMenosEnProyecto1(char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  //Si hay mas de un analista que trabajo la misma cantidad de horas, se devuelve el primero encontrado.
+  int i, k, horasAcumuladas=0, analistaMenosTrabajo=1, horasAnalistaMenosTrabajo=9999999;
+
+  //el nro de analista es i+1
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    for(k=0;k<trabajosF;k++){
+      if(i+1==trabajos[k][1]){
+        if(1==trabajos[k][2]){
+          horasAcumuladas+=trabajos[k][3];
+        }
+      }
+    }
+    if(horasAcumuladas < horasAnalistaMenosTrabajo){
+      analistaMenosTrabajo = i+1;
+      horasAnalistaMenosTrabajo = horasAcumuladas;
+    }
+    horasAcumuladas=0;
+  }
+  printf("El analista que menos trabajo en el proyecto 1 es: %s\n", analistas[analistaMenosTrabajo]);
+}
+
+void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, horasAcumuladas=0;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //el nro de analista es i+1
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        horasAcumuladas+=trabajos[j][3];
+      }
+    }
+    printf("El sueldo del analista %s es: %0.2f\n", analistas[i], horasAcumuladas*valorDeHora[i]);
+    horasAcumuladas=0;
+  }
+}
+
+void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, analistaMasCobro=0, sueldoAnalistaMasCobro=0;
+  float sueldo=0;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        sueldo+=trabajos[j][3]*valorDeHora[i];
+      }
+    }
+    if(sueldo > sueldoAnalistaMasCobro){
+      analistaMasCobro= i;
+      sueldoAnalistaMasCobro = sueldo;
+    }
+    sueldo = 0;
+  }
+  printf("El nombre del analista que mas cobra es: %s\n", analistas[analistaMasCobro]);
+}
+
+void cantAnalistaTrabajaronMenosDe5enAlgunProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, k, horasAcumuladas=0, cantAnalistas=0;
+
+  //el nro de analista es i+1
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //recorro los 15 proyectos
+    for(j=1;j<16;j++){
+      for(k=0;k<trabajosF;k++){
+        if(i+1==trabajos[k][1]){
+          if(j==trabajos[k][2]){
+            horasAcumuladas+=trabajos[k][3];
+          }
+        }
+      }
+      if(horasAcumuladas < 5){
+        cantAnalistas += 1;
+        j=16;
+      }
+      horasAcumuladas=0;
+    }
+  }
+  printf("La cantidad de analistas que trabajaron menos de 5 horas en algunproyecto es: %d\n", cantAnalistas);
+}
+
+void sueldosDeAnalistasOrdenados(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]){
+  int i, j, sueldo=0;
+  float valor;
+  float sueldoAnalistas[CANTIDAD_ANALISTAS];
+  char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA];
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    //el nro de analista es i+1
+    for(j=0;j<trabajosF;j++){
+      if(i+1==trabajos[j][1]){
+        sueldo+=trabajos[j][3]*valorDeHora[i];
+      }
+    }
+    sueldoAnalistas[i]=sueldo;
+    strcpy(nombreAnalistas[i],analistas[i]);
+    sueldo=0;
+  }
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    ordenarPorSueldo(sueldoAnalistas, nombreAnalistas);
+    valor=valorDeHoraDeAnalista(valorDeHora, analistas, nombreAnalistas[i]);
+    printf("Analista: %s \t Valor de Hora: %0.2f \t Sueldo: %0.2f \n", nombreAnalistas[i], sueldoAnalistas[i]);
+  }
+}
+
+float valorDeHoraDeAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], char nombreAnalista[LONG_NOMBRE_ANALISTA]){
+}
+
+void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA]){
+  void ordenaxnombre(struct sucursal vecSuc[], int n){
+    int i,j,comparar,aux_id;
+    char aux_barrio[30];
+    float aux_promedio;
+    for(i=0;i<n;i++){
+      for(j=0;j<n-i-1;j++){
+        comparar = strcmp(vecSuc[j].barrio,vecSuc[j+1].barrio);
+        if(comparar<0){
+          aux_id=vecSuc[j].id_sucursal;
+          strcpy(aux_barrio,vecSuc[j].barrio);
+          aux_promedio = vecSuc[j].promedio_ventas;
+          vecSuc[j].id_sucursal = vecSuc[j+1].id_sucursal;
+          strcpy(vecSuc[j].barrio,vecSuc[j+1].barrio);
+          vecSuc[j].promedio_ventas = vecSuc[j+1].promedio_ventas;
+          vecSuc[j+1].id_sucursal = aux_id;
+          strcpy(vecSuc[j+1].barrio,aux_barrio);
+          vecSuc[j+1].promedio_ventas = aux_promedio;
+        }
+      }
+      if(estaOrdenado(vecSuc,n)==1) i=n;
+    }
+  }
+}
+
+int estaOrdenado(struct sucursal vecSuc[], int n){
+    int i,comparar;
+    for(i=0;i<n-1;i++){
+        comparar = strcmp(vecSuc[i].barrio,vecSuc[i+1].barrio);
+        if(comparar>0){
+            return 0;
+        }
+    }
+    return 1;
 }
