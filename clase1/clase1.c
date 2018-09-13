@@ -3,16 +3,19 @@
 #include <string.h>
 
 #define RELACION_SIZE 4
+#define RELACION_PARES_SIZE 2
 
 void menuPantalla(int *opcion);
-void ingresoDeDatos(int pares, int relacion[RELACION_SIZE][pares]);
-/* la relacion: AxB = {(1,2), (3,4)} Se escribe como: 1 2 (enter) 3 4 (enter) */
+void ingresoDeDatos(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void imprimirRelacion(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 
 
 int main ()
 {
-  int pares=2, opcion=1;
-  int relacion[RELACION_SIZE][pares];
+  int opcion=1;
+  int relacion[RELACION_SIZE][RELACION_PARES_SIZE];
 
   /* ==================== */
   /* Menu del programa */
@@ -21,9 +24,9 @@ int main ()
     menuPantalla(&opcion);
     switch (opcion)
       {
-      case 0: ingresoDeDatos(pares, relacion); break;
-      /* case 1: determinarDominio(); */
-      /* case 2: determinarRango(); */
+      case 0: ingresoDeDatos(relacion); break;
+      case 1: determinarDominio(relacion); break;
+      case 2: determinarRango(relacion); break;
       /* case 3: determinarReflexividad(); */
       /* case 4: determinarAntisimetria(); */
       /* case 5: determinarTransitividad(); */
@@ -52,11 +55,56 @@ void menuPantalla(int *opcion){
 
 }
 
-void ingresoDeDatos(int pares, int relacion[RELACION_SIZE][pares]){
+void ingresoDeDatos(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   int i;
 
+  printf("Ingresar relacion: \n");
   for(i=0;i<RELACION_SIZE;i++){
-    printf("Ingresar relacion: \n");
-    printf("Par %d, valor %d: \n", i, i%2+1);
+    printf("Par %d primer valor: \n", (i+2)/2);
+    scanf("%d", &relacion[i][0]);
+    while(getchar() !='\n');
+    printf("Par %d segundo valor: \n", (i+2)/2);
+    scanf("%d", &relacion[i][1]);
+    while(getchar() !='\n');
   }
+
+  imprimirRelacion(relacion);
+}
+
+void imprimirRelacion(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i;
+
+  printf("Relacion AxB={ ");
+  for(i=0;i<RELACION_SIZE;i++){
+    printf("(%d,%d) ", relacion[i][0], relacion[i][1]);
+  }
+  printf("}\n");
+}
+
+void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i;
+
+  printf("El dominio de la relacion ");
+  imprimirRelacion(relacion);
+  printf("es: \n");
+
+  printf("{ ");
+  for(i=0;i<RELACION_SIZE;i++){
+    printf("%d ", relacion[i][0]);
+  }
+  printf("}\n");
+}
+
+void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i;
+
+  printf("El rango de la relacion ");
+  imprimirRelacion(relacion);
+  printf("es: \n");
+
+  printf("{ ");
+  for(i=0;i<RELACION_SIZE;i++){
+    printf("%d ", relacion[i][1]);
+  }
+  printf("}\n");
 }
