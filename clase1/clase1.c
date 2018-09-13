@@ -10,6 +10,7 @@ void ingresoDeDatos(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void imprimirRelacion(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 
 
 int main ()
@@ -27,7 +28,7 @@ int main ()
       case 0: ingresoDeDatos(relacion); break;
       case 1: determinarDominio(relacion); break;
       case 2: determinarRango(relacion); break;
-      /* case 3: determinarReflexividad(); */
+      case 3: determinarReflexividad(relacion); break;
       /* case 4: determinarAntisimetria(); */
       /* case 5: determinarTransitividad(); */
       }
@@ -95,6 +96,16 @@ void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   printf("}\n");
 }
 
+/* void devolverDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){ */
+/*   int i, dominio[RELACION_SIZE]; */
+
+/*   for(i=0;i<RELACION_SIZE;i++){ */
+/*     dominio[i]=relacion[i][0]; */
+/*   } */
+
+/*   return dominio; */
+/* } */
+
 void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   int i;
 
@@ -107,4 +118,41 @@ void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
     printf("%d ", relacion[i][1]);
   }
   printf("}\n");
+}
+
+void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i, j, dominio[RELACION_SIZE];
+  int esReflexiva; //0 es true y 1 false
+
+  //Dominio de la relacion
+  for(i=0;i<RELACION_SIZE;i++){
+    dominio[i] = relacion[i][0];
+  }
+
+  for(i=0;i<RELACION_SIZE;i++){
+    //Lo seteo en NO es reflexiva para el siguien nro del dominio
+    esReflexiva=1;
+    for(j=0;j<RELACION_SIZE;j++){
+      //si el primer valor del par en la relacion es = al primer valor del dominio
+      // me fijo si el 2do tambien lo es. Si se recorre toda la relacion y ninguno lo es,
+      // no es una relacion reflexiva
+      if(relacion[j][0]==dominio[i]){
+        if(relacion[j][1]==dominio[i]){
+          esReflexiva=0;
+          j=RELACION_SIZE;
+        }
+      }
+    }
+    //Si no es reflexiva, salgo del for
+    if(esReflexiva==1){
+      i=RELACION_SIZE;
+    }
+
+  }
+    if(esReflexiva==0){
+      printf("La relacion es reflexiva\n");
+    }else{
+      printf("La relacion NO es reflexiva\n");
+    }
+
 }
