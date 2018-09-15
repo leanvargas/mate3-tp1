@@ -11,6 +11,8 @@ void imprimirRelacion(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarTransitividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+int verificarPar(int numDominio, int numRango, int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 
 
 int main ()
@@ -30,7 +32,7 @@ int main ()
       case 2: determinarRango(relacion); break;
       case 3: determinarReflexividad(relacion); break;
       /* case 4: determinarAntisimetria(); */
-      /* case 5: determinarTransitividad(); */
+      case 5: determinarTransitividad(relacion); break;
       }
   }while(opcion<6);
   /* ======================= */
@@ -155,4 +157,48 @@ void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
       printf("La relacion NO es reflexiva\n");
     }
 
+}
+
+void determinarTransitividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i, j, numDominio, numRango;
+  int esTransitiva; //0 es true y 1 false
+
+  for(i=0;i<RELACION_SIZE;i++){
+    esTransitiva=1;
+    numDominio=relacion[i][0];
+    numRango=relacion[i][1];
+    for(j=0;j<RELACION_SIZE;j++){
+      if(relacion[j][0]==numRango){
+        printf("4 veces \n");
+        numRango=relacion[j][1];
+        printf("par: %d %d\n",numDominio, numRango);
+        esTransitiva = verificarPar(numDominio, numRango, relacion);
+        j=RELACION_SIZE;
+      }
+    }
+    if(esTransitiva==1){
+      i=RELACION_SIZE;
+    }
+  }
+  if(esTransitiva==0){
+    printf("La relacion es transitiva\n");
+  }else{
+    printf("La relacion NO es transitiva\n");
+  }
+
+}
+
+int verificarPar(int numDominio, int numRango, int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i, test, tienePar=1; //0=encontro el par, 1 = no lo encontro
+
+  for(i=0;i<RELACION_SIZE;i++){
+    test = (relacion[i][0]==numDominio && relacion[i][1]==numRango);
+    if(test){
+      i=RELACION_SIZE;
+      tienePar=0;
+      printf("tienePar %d\n", tienePar);
+    }
+  }
+
+    return tienePar;
 }
