@@ -23,7 +23,7 @@ void SueldoDeCadaAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[
 void AnalistaQueCrobroMas(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void cantAnalistaTrabajaronMenosDe5enAlgunProyecto(int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
 void sueldosDeAnalistasOrdenados(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], int trabajosF, int trabajosC, int trabajos[trabajosF][trabajosC]);
-void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA]);
+void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], float valorDeHora[CANTIDAD_ANALISTAS]);
 float valorDeHoraDeAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], char nombreAnalista[LONG_NOMBRE_ANALISTA]);
 
 int main ()
@@ -328,47 +328,60 @@ void sueldosDeAnalistasOrdenados(float valorDeHora[CANTIDAD_ANALISTAS], char ana
   }
 
   for(i=0;i<CANTIDAD_ANALISTAS;i++){
-    ordenarPorSueldo(sueldoAnalistas, nombreAnalistas);
+    ordenarPorSueldo(sueldoAnalistas, nombreAnalistas, valorDeHora);
     valor=valorDeHoraDeAnalista(valorDeHora, analistas, nombreAnalistas[i]);
-    printf("Analista: %s \t Valor de Hora: %0.2f \t Sueldo: %0.2f \n", nombreAnalistas[i], sueldoAnalistas[i]);
+    printf("Analista: %s \t Valor de Hora: %0.2f \t Sueldo: %0.2f \n", nombreAnalistas[i], valor, sueldoAnalistas[i]);
   }
 }
 
 float valorDeHoraDeAnalista(float valorDeHora[CANTIDAD_ANALISTAS], char analistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], char nombreAnalista[LONG_NOMBRE_ANALISTA]){
+  int i, comparar;
+  float valor=0;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    comparar = strcmp(analistas[i],nombreAnalista);
+    if(comparar){
+      valor=valorDeHora[i];
+      i=CANTIDAD_ANALISTAS;
+    }
+  }
+
+  return valor;
 }
 
-void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA]){
-  void ordenaxnombre(struct sucursal vecSuc[], int n){
-    int i,j,comparar,aux_id;
-    char aux_barrio[30];
-    float aux_promedio;
-    for(i=0;i<n;i++){
-      for(j=0;j<n-i-1;j++){
-        comparar = strcmp(vecSuc[j].barrio,vecSuc[j+1].barrio);
-        if(comparar<0){
-          aux_id=vecSuc[j].id_sucursal;
-          strcpy(aux_barrio,vecSuc[j].barrio);
-          aux_promedio = vecSuc[j].promedio_ventas;
-          vecSuc[j].id_sucursal = vecSuc[j+1].id_sucursal;
-          strcpy(vecSuc[j].barrio,vecSuc[j+1].barrio);
-          vecSuc[j].promedio_ventas = vecSuc[j+1].promedio_ventas;
-          vecSuc[j+1].id_sucursal = aux_id;
-          strcpy(vecSuc[j+1].barrio,aux_barrio);
-          vecSuc[j+1].promedio_ventas = aux_promedio;
-        }
+void ordenarPorSueldo(float sueldoAnalistas[CANTIDAD_ANALISTAS], char nombreAnalistas[CANTIDAD_ANALISTAS][LONG_NOMBRE_ANALISTA], float valorDeHora[CANTIDAD_ANALISTAS]){
+  int i,j;
+  char aux_analista[LONG_NOMBRE_ANALISTA];
+  float aux_sueldo, aux_valor;
+
+  for(i=0;i<CANTIDAD_ANALISTAS;i++){
+    for(j=0;j<CANTIDAD_ANALISTAS-i-1;j++){
+      if(sueldoAnalistas[j] < sueldoAnalistas[j+1]){
+        aux_sueldo = sueldoAnalistas[j];
+        sueldoAnalistas[j]=sueldoAnalistas[j+1];
+        sueldoAnalistas[j+1]=aux_sueldo;
+
+        aux_valor = valorDeHora[j];
+        valorDeHora[j]=valorDeHora[j+1];
+        valorDeHora[j+1]=aux_valor;
+
+        strcpy(aux_analista,nombreAnalistas[j]);
+        strcpy(nombreAnalistas[j],nombreAnalistas[j+1]);
+        strcpy(nombreAnalistas[j+1],aux_analista);
+
       }
-      if(estaOrdenado(vecSuc,n)==1) i=n;
     }
+    /* if(estaOrdenado(vecSuc,n)==1) i=n; */
   }
 }
 
-int estaOrdenado(struct sucursal vecSuc[], int n){
-    int i,comparar;
-    for(i=0;i<n-1;i++){
-        comparar = strcmp(vecSuc[i].barrio,vecSuc[i+1].barrio);
-        if(comparar>0){
-            return 0;
-        }
-    }
-    return 1;
-}
+/* int estaOrdenado(struct sucursal vecSuc[], int n){ */
+/*     int i,comparar; */
+/*     for(i=0;i<n-1;i++){ */
+/*         comparar = strcmp(vecSuc[i].barrio,vecSuc[i+1].barrio); */
+/*         if(comparar>0){ */
+/*             return 0; */
+/*         } */
+/*     } */
+/*     return 1; */
+/* } */
