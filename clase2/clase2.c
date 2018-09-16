@@ -5,6 +5,8 @@
 void calcularFactorial();
 int funcionFactorial(int num);
 void menuPantalla(int *opcion);
+void calcularFibonacci();
+int funcionFibonacci(int num);
 
 int main ()
 {
@@ -18,7 +20,7 @@ int main ()
     switch (opcion)
       {
       case 0: calcularFactorial(); break;
-      /* case 1: calcularFibonacci(num); break; */
+      case 1: calcularFibonacci(); break;
       }
   }while(opcion<2);
   /* ======================= */
@@ -57,4 +59,28 @@ int funcionFactorial(int num){
   }else{
     return 1;
   }
+}
+
+void calcularFibonacci(){
+  int i, j, num;
+
+  printf("Ingresar un numero:\n");
+  scanf("%d", &num);
+  while(getchar() !='\n');
+
+  printf("Los primeros %d terminos de Fibonacci son:\n", num);
+  j=0;
+  for (i=1; i <= num; i++)
+  {
+    printf("%d ", funcionFibonacci(j));
+    j++;
+  }
+  printf("\n");
+}
+
+int funcionFibonacci(int num){
+  if (num == 0 || num == 1)
+    return num;
+  else
+    return (funcionFibonacci(num-1) + funcionFibonacci(num-2));
 }
