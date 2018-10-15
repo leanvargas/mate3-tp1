@@ -4,13 +4,15 @@
 
 #define RELACION_SIZE 4
 #define RELACION_PARES_SIZE 2
+#define CONJUNTO_SIZE 4
 
 void menuPantalla(int *opcion);
-void ingresoDeDatos(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void ingresoDeDatos(int conjunto[CONJUNTO_SIZE], int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void imprimirRelacion(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
-void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarReflexividad(int conjunto[CONJUNTO_SIZE], int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
+void determinarAntisimetria(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 void determinarTransitividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 int verificarPar(int numDominio, int numRango, int relacion[RELACION_SIZE][RELACION_PARES_SIZE]);
 
@@ -19,6 +21,7 @@ int main ()
 {
   int opcion=1;
   int relacion[RELACION_SIZE][RELACION_PARES_SIZE];
+  int conjunto[CONJUNTO_SIZE];
 
   /* ==================== */
   /* Menu del programa */
@@ -27,11 +30,11 @@ int main ()
     menuPantalla(&opcion);
     switch (opcion)
       {
-      case 0: ingresoDeDatos(relacion); break;
+      case 0: ingresoDeDatos(conjunto, relacion); break;
       case 1: determinarDominio(relacion); break;
       case 2: determinarRango(relacion); break;
-      case 3: determinarReflexividad(relacion); break;
-      /* case 4: determinarAntisimetria(); */
+      case 3: determinarReflexividad(conjunto, relacion); break;
+      case 4: determinarAntisimetria(relacion); break;
       case 5: determinarTransitividad(relacion); break;
       }
   }while(opcion<6);
@@ -43,7 +46,7 @@ int main ()
 void menuPantalla(int *opcion){
   do{
     printf("MENU DEL PROGRAMA\n\n");
-    printf("0:Ingresar relacion\n");
+    printf("0:Ingresar datos\n");
     printf("1:Determinar el dominio de la relacion\n");
     printf("2:Determinar el rango de la relacion\n");
     printf("3:Determinar si una relacion es reflexiva\n");
@@ -58,15 +61,22 @@ void menuPantalla(int *opcion){
 
 }
 
-void ingresoDeDatos(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+void ingresoDeDatos(int conjunto[CONJUNTO_SIZE], int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   int i;
+
+  printf("Ingresar conjunto: \n");
+  for(i=0;i<CONJUNTO_SIZE;i++){
+    printf("Valor %d: \n", (i+1));
+    scanf("%d", &conjunto[i]);
+    while(getchar() !='\n');
+  }
 
   printf("Ingresar relacion: \n");
   for(i=0;i<RELACION_SIZE;i++){
-    printf("Par %d primer valor: \n", (i+2)/2);
+    printf("Par %d primer valor: \n", i+1);
     scanf("%d", &relacion[i][0]);
     while(getchar() !='\n');
-    printf("Par %d segundo valor: \n", (i+2)/2);
+    printf("Par %d segundo valor: \n", i+1);
     scanf("%d", &relacion[i][1]);
     while(getchar() !='\n');
   }
@@ -98,16 +108,6 @@ void determinarDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   printf("}\n");
 }
 
-/* void devolverDominio(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){ */
-/*   int i, dominio[RELACION_SIZE]; */
-
-/*   for(i=0;i<RELACION_SIZE;i++){ */
-/*     dominio[i]=relacion[i][0]; */
-/*   } */
-
-/*   return dominio; */
-/* } */
-
 void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   int i;
 
@@ -122,40 +122,55 @@ void determinarRango(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   printf("}\n");
 }
 
-void determinarReflexividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+void determinarReflexividad(int conjunto[CONJUNTO_SIZE], int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   int i, j, dominio[RELACION_SIZE];
-  int esReflexiva; //0 es true y 1 false
+  int encontroPar; //0 es true y 1 false
 
   //Dominio de la relacion
   for(i=0;i<RELACION_SIZE;i++){
     dominio[i] = relacion[i][0];
   }
 
-  for(i=0;i<RELACION_SIZE;i++){
-    //Lo seteo en NO es reflexiva para el siguien nro del dominio
-    esReflexiva=1;
+  for(i=0;i<CONJUNTO_SIZE;i++){
+    encontroPar=1;
     for(j=0;j<RELACION_SIZE;j++){
-      //si el primer valor del par en la relacion es = al primer valor del dominio
-      // me fijo si el 2do tambien lo es. Si se recorre toda la relacion y ninguno lo es,
-      // no es una relacion reflexiva
-      if(relacion[j][0]==dominio[i]){
-        if(relacion[j][1]==dominio[i]){
-          esReflexiva=0;
-          j=RELACION_SIZE;
-        }
+      if(conjunto[i]==relacion[j][0] && conjunto[i]==relacion[j][1]){
+        encontroPar=0;
+        j=RELACION_SIZE;
       }
     }
     //Si no es reflexiva, salgo del for
-    if(esReflexiva==1){
+    if(encontroPar==1){
       i=RELACION_SIZE;
     }
 
   }
-    if(esReflexiva==0){
+    if(encontroPar==0){
       printf("La relacion es reflexiva\n");
     }else{
       printf("La relacion NO es reflexiva\n");
     }
+
+}
+
+void determinarAntisimetria(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
+  int i, j, numDominio, numRango;
+  int esAntisimetrica; //0 es true y 1 false
+
+  for(i=0;i<RELACION_SIZE;i++){
+    esAntisimetrica=1;
+    if(relacion[i][0]!=relacion[i][1]){
+      esAntisimetrica = verificarPar(relacion[i][1], relacion[i][0], relacion);
+      if(esAntisimetrica==0){
+        i=RELACION_SIZE;
+      }
+    }
+  }
+  if(esAntisimetrica==1){
+    printf("La relacion es antisimetrica\n");
+  }else{
+    printf("La relacion NO es antisimetrica\n");
+  }
 
 }
 
@@ -169,9 +184,7 @@ void determinarTransitividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
     numRango=relacion[i][1];
     for(j=0;j<RELACION_SIZE;j++){
       if(relacion[j][0]==numRango){
-        printf("4 veces \n");
         numRango=relacion[j][1];
-        printf("par: %d %d\n",numDominio, numRango);
         esTransitiva = verificarPar(numDominio, numRango, relacion);
         j=RELACION_SIZE;
       }
@@ -182,6 +195,7 @@ void determinarTransitividad(int relacion[RELACION_SIZE][RELACION_PARES_SIZE]){
   }
   if(esTransitiva==0){
     printf("La relacion es transitiva\n");
+    printf("mierda\n");
   }else{
     printf("La relacion NO es transitiva\n");
   }
@@ -196,7 +210,6 @@ int verificarPar(int numDominio, int numRango, int relacion[RELACION_SIZE][RELAC
     if(test){
       i=RELACION_SIZE;
       tienePar=0;
-      printf("tienePar %d\n", tienePar);
     }
   }
 
