@@ -7,6 +7,7 @@
 
 void menuPantalla(int *opcion);
 void cantidadAcumuladaCadaAnio();
+void mezclarSucesiones();
 
 int main ()
 {
@@ -20,11 +21,7 @@ int main ()
     switch (opcion)
       {
       case 0: cantidadAcumuladaCadaAnio(); break;
-        //      case 1: imprimirMatriz(matriz); break;
-        /*      case 3: determinarReflexividad(conjunto, relacion); break;
-      case 4: determinarAntisimetria(relacion); break;
-      case 5: determinarTransitividad(relacion); break;
-*/
+      case 1: mezclarSucesiones(); break;
       }
   }while(opcion<OPCIONES_MENU);
   /* ======================= */
@@ -36,7 +33,7 @@ void menuPantalla(int *opcion){
   do{
     printf("MENU DEL PROGRAMA\n\n");
     printf("0:Cantidad de pesos acumulada por anio\n");
-    printf("1:\n");
+    printf("1:Mezclar 2 sucesiones\n");
     printf("2:Salir del programa\n");
 
     printf("ingresar una opcion\n");
@@ -68,58 +65,73 @@ void cantidadAcumuladaCadaAnio(){
   }
 }
 
+void mezclarSucesiones(){
+  int i, numPares[10], numImpares[10], sucesionesMezcladas[20];
 
-void matrizAleatoriaAdyacente(int matriz[MATRIX_SIZE][MATRIX_SIZE]){
-  int i, j, numRandom;
-
-  for(i=0;i<MATRIX_SIZE;i++){
-    for(j=0;j<MATRIX_SIZE;j++){
-	    if(i<j){
-        numRandom = rand() % 2;
-        matriz[i][j]=numRandom;
-        matriz[j][i]=numRandom;
-	    }else if(i==j){
-        numRandom = rand() % 2;
-        matriz[i][j]= numRandom;
-	    }
-    }
+  //Numeros pares
+  for(i=0;i<10;i++){
+    numPares[i] = i*2;
   }
 
-}
-
-void imprimirMatriz(int matriz[MATRIX_SIZE][MATRIX_SIZE]){
-  int i, j, numUno=0, lazos=0, sumVertices=0;
-
-  printf("-------------------- \n");
-
-  for(j=0;j<MATRIX_SIZE;j++){
-    numUno=0;
-    for(i=0;i<MATRIX_SIZE;i++){
-	    if(matriz[i][j]==1){
-        numUno+=1;
-      }
-    }
-    if(numUno==1){
-      lazos+=1;
-    }
+  //Numeros impares
+  for(i=0;i<10;i++){
+    numImpares[i] = (i*2)+1;
   }
 
-  for(i=0;i<MATRIX_SIZE;i++){
-    numUno=0;
-    for(j=0;j<MATRIX_SIZE;j++){
-      if(matriz[i][j]==1){
-        numUno+=1;
-      }
-    }
-    printf("El grado del vertice %d es: %d \n", i+1,numUno);
-
-    sumVertices+=numUno;
+  printf("Sucesion numeros pares: \n");
+  printf("%d", numPares[0]);
+  for(i=1;i<10;i++){
+    printf(" + ");
+    printf("%d", numPares[i]);
   }
-
   printf("\n");
-  printf("-------------------- \n");
 
-  printf("El numero de lazos es: %d \n", lazos);
+  printf("Sucesion numeros impares: \n");
+  printf("%d", numImpares[0]);
+  for(i=1;i<10;i++){
+    printf(" + ");
+    printf("%d", numImpares[i]);
+  }
+  printf("\n");
 
-  printf("El numero de aristas es: %d \n", sumVertices/2);
+  printf("Sucesiones mezcladas de forma ascendente: \n");
+  for(i=0;i<20;i++){
+    if(i%2 == 0){
+      sucesionesMezcladas[i]=numPares[i/2];
+    }else{
+      sucesionesMezcladas[i]=numImpares[(i-1)/2];
+    }
+  }
+
+  printf("%d", sucesionesMezcladas[0]);
+  for(i=1;i<20;i++){
+    printf(" + ");
+    printf("%d", sucesionesMezcladas[i]);
+  }
+  printf("\n");
+
+  printf("Sucesiones mezcladas de forma descendente: \n");
+  printf("%d", sucesionesMezcladas[19]);
+  for(i=1;i<20;i++){
+    printf(" + ");
+    printf("%d", sucesionesMezcladas[19-i]);
+  }
+  printf("\n");
+
+  printf("Sucesiones mezcladas de forma aleatoria: \n");
+  for(i=1;i<20;i++){
+    int temp = sucesionesMezcladas[i];
+    int indice = rand() % 20;
+
+    sucesionesMezcladas[i]=sucesionesMezcladas[indice];
+    sucesionesMezcladas[indice]=temp;
+  }
+
+  printf("%d", sucesionesMezcladas[0]);
+  for(i=1;i<20;i++){
+    printf(" + ");
+    printf("%d", sucesionesMezcladas[i]);
+  }
+  printf("\n");
+
 }
