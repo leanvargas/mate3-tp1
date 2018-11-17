@@ -23,8 +23,7 @@ int main ()
       {
       case 0: matrizAleatoriaAdyacente(matriz); break;
       case 1: imprimirMatriz(matriz); break;
-/*      case 2: determinarRango(relacion); break;
-      case 3: determinarReflexividad(conjunto, relacion); break;
+        /*      case 3: determinarReflexividad(conjunto, relacion); break;
       case 4: determinarAntisimetria(relacion); break;
       case 5: determinarTransitividad(relacion); break;
 */
@@ -54,45 +53,56 @@ void menuPantalla(int *opcion){
 }
 
 void matrizAleatoriaAdyacente(int matriz[MATRIX_SIZE][MATRIX_SIZE]){
-    int i, j, numRandom;
+  int i, j, numRandom;
 
-    for(i=0;i<MATRIX_SIZE;i++){
-        for(j=0;j<MATRIX_SIZE;j++){
+  for(i=0;i<MATRIX_SIZE;i++){
+    for(j=0;j<MATRIX_SIZE;j++){
 	    if(i<j){
-		numRandom = rand() % 2;
-		matriz[i][j]=numRandom;
-		matriz[j][i]=numRandom;
+        numRandom = rand() % 2;
+        matriz[i][j]=numRandom;
+        matriz[j][i]=numRandom;
 	    }else if(i==j){
-		numRandom = rand() % 2;
-		matriz[i][j]= numRandom;
+        numRandom = rand() % 2;
+        matriz[i][j]= numRandom;
 	    }
-	}
     }
+  }
 
 }
 
 void imprimirMatriz(int matriz[MATRIX_SIZE][MATRIX_SIZE]){
-    //tengo que convertir la matriz en una de incidencias
-    int i, j, lazos=0, aristas=0;
+  int i, j, numUno=0, lazos=0, sumVertices=0;
 
-    printf("-------------------- \n");
+  printf("-------------------- \n");
 
+  for(j=0;j<MATRIX_SIZE;j++){
+    numUno=0;
     for(i=0;i<MATRIX_SIZE;i++){
-	if(matriz[i][i]==1){
-	    lazos+=1;
-	}
-
-        for(j=0;j<MATRIX_SIZE;j++){
-	    printf("%d ", matriz[i][j]);
-
 	    if(matriz[i][j]==1){
-		aristas+=1;
-	    }
-	}
-	printf("\n");
+        numUno+=1;
+      }
     }
-    printf("-------------------- \n");
+    if(numUno==1){
+      lazos+=1;
+    }
+  }
 
-    aristas=2*aristas+lazos;
+  for(i=0;i<MATRIX_SIZE;i++){
+    numUno=0;
+    for(j=0;j<MATRIX_SIZE;j++){
+      if(matriz[i][j]==1){
+        numUno+=1;
+      }
+    }
+    printf("El grado del vertice %d es: %d \n", i+1,numUno);
 
+    sumVertices+=numUno;
+  }
+
+  printf("\n");
+  printf("-------------------- \n");
+
+  printf("El numero de lazos es: %d \n", lazos);
+
+  printf("El numero de aristas es: %d \n", sumVertices/2);
 }
